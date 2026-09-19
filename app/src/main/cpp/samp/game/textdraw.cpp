@@ -3,6 +3,8 @@
 #include "util.h"
 #include "RW/RenderWare.h"
 #include "../gui/gui.h"
+#include "Models/ModelInfo.h"
+
 
 extern UI* pUI;
 extern CSnapShotHelper* pSnapShotHelper;
@@ -290,7 +292,6 @@ void CTextDraw::LoadTexture()
     }
 }
 
-#include "Models/ModelInfo.h"
 void CTextDraw::SnapshotProcess()
 {
     if (m_TextDrawData.dwStyle != 5 || m_TextDrawData.iTextureSlot != -1) {

@@ -258,7 +258,6 @@ int CFileLoader__LoadObjectInstance_hook(stLoadObjectInstance *thiz) {
 	return CFileLoader__LoadObjectInstance(thiz);
 }
 
-extern int iBuildingToRemoveCount;
 extern std::list<REMOVE_BUILDING_DATA> RemoveBuildingData;
 void (*CEntity_Render)(CEntityGTA* pEntity);
 int g_iLastRenderedObject;

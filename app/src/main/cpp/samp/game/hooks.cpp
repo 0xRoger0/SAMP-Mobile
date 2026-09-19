@@ -1,4 +1,5 @@
 #include <GLES2/gl2.h>
+#include <EGL/egl.h>
 #include "../main.h"
 #include "../vendor/armhook/patch.h"
 #include "game.h"
@@ -28,6 +29,17 @@
 #include "Renderer.h"
 #include "CrossHair.h"
 #include "World.h"
+#include "Widgets/TouchInterface.h"
+#include "CFPSFix.h"
+#include "ES2VertexBuffer.h"
+#include "RQ_Commands.h"
+#include "Pickups.h"
+#include "TimeCycle.h"
+#include "game/Pipelines/CustomCar/CustomCarEnvMapPipeline.h"
+#include "game/Pipelines/CustomBuilding/CustomBuildingDNPipeline.h"
+#include "COcclusion.h"
+#include "RealTimeShadowManager.h"
+#include "game/Widgets/WidgetGta.h"
 
 extern UI* pUI;
 extern CGame* pGame;
@@ -863,17 +875,6 @@ void CRenderer_RenderEverythingBarRoads_hook() {
 		}
 	}
 }
-
-#include "CFPSFix.h"
-#include "ES2VertexBuffer.h"
-#include "RQ_Commands.h"
-#include "Pickups.h"
-#include "TimeCycle.h"
-#include "game/Pipelines/CustomCar/CustomCarEnvMapPipeline.h"
-#include "game/Pipelines/CustomBuilding/CustomBuildingDNPipeline.h"
-#include "COcclusion.h"
-#include "RealTimeShadowManager.h"
-#include "game/Widgets/WidgetGta.h"
 
 CFPSFix g_fps;
 
@@ -1716,7 +1717,6 @@ int mpg123_param_hook(void* mh, int key, long val, int ZERO, double fval)
     return mpg123_param(mh, key, val | (0x2000 | 0x200 | 0x100 | 0x40), ZERO, fval);
 }
 
-#include "Widgets/TouchInterface.h"
 void InjectHooks()
 {
     FLog("InjectHooks");
@@ -1828,9 +1828,6 @@ void InstallSpecialHooks()
 	CHook::InlineHook("_Z32_rxOpenGLDefaultAllInOneRenderCBP10RwResEntryPvhj", &rxOpenGLDefaultAllInOneRenderCB_hook, &rxOpenGLDefaultAllInOneRenderCB);
 	CHook::InlineHook("_ZN25CCustomBuildingDNPipeline18CustomPipeRenderCBEP10RwResEntryPvhj", &CCustomBuildingDNPipeline__CustomPipeRenderCB_hook, &CCustomBuildingDNPipeline__CustomPipeRenderCB);
 }
-
-#include <EGL/egl.h>
-#include <GLES2/gl2.h>   // If using OpenGL ES 2.0 or 3.0
 
 void InstallHooks()
 {

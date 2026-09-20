@@ -1840,10 +1840,7 @@ void InstallCRHooks()
         extension[1] = 'x';
         extension[2] = 't';
 
-        FLog(
-            "Texture extension patched: %s -> dxt",
-            patch.oldExtension
-        );
+        // FLog("Texture extension patched: %s -> dxt", patch.oldExtension);
     }
 }
 

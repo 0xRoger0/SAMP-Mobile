@@ -1800,11 +1800,57 @@ void InstallUrezHooks()
     *(char*)(g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F) + 14) = 't';
 }
 
+void InstallCRHooks()
+{
+    struct TexturePathPatch
+    {
+        uintptr_t x32;
+        uintptr_t x64;
+        const char* oldExtension;
+    };
+
+    static const TexturePathPatch patches[] =
+    {
+        { 0x1E87A0, 0x714003, "pvr" }, // pvr.tmb
+        { 0x1E8C04, 0x71406F, "pvr" }, // pvr
+        { 0x1E878C, 0x714017, "etc" }, // etc.tmb
+        { 0x1E8BF4, 0x71407F, "etc" }, // etc
+        { 0x1E87F0, 0x713FB3, "unc" }, // unc.tmb
+    };
+
+    for (const auto& patch : patches)
+    {
+        uintptr_t address = g_libGTASA + (VER_x32 ? patch.x32 : patch.x64);
+        char* extension = reinterpret_cast<char*>(address + 12);
+
+        if (memcmp(extension, patch.oldExtension, 3) != 0)
+        {
+            FLog(
+                "Texture extension patch skipped: expected %s, got %.3s at %p",
+                patch.oldExtension,
+                extension,
+                reinterpret_cast<void*>(address)
+            );
+            continue;
+        }
+
+        CHook::UnFuck(address);
+
+        extension[0] = 'd';
+        extension[1] = 'x';
+        extension[2] = 't';
+
+        // FLog("Texture extension patched: %s -> dxt", patch.oldExtension);
+    }
+}
+
 void InstallSpecialHooks()
 {
     InjectHooks();
 
     InstallUrezHooks();
+
+	//InstallCRHooks(); //call this when using the CRMP cache
 
     CHook::Redirect("_ZN5CGame20InitialiseRenderWareEv", &CGame::InitialiseRenderWare);
     CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6785FC : 0x84EC20), &StartGameScreen__OnNewGameCheck_hook, &StartGameScreen__OnNewGameCheck);
